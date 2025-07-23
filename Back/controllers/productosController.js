@@ -6,20 +6,17 @@ export async function crearProducto(req, res) {
     imagen_url, precio_compra, precio_venta, tallas
   } = req.body;
 
-  // Insertar producto
   const { data: producto, error: prodError } = await supabase
     .from('productos')
     .insert([{
       codigo, marca, nombre_modelo, color, material_id,
       imagen_url, precio_compra, precio_venta
     }])
-    .select(); // para devolver id
+    .select(); 
 
   if (prodError) return res.status(500).json({ error: prodError.message });
 
   const productoId = producto[0].id;
-
-  // Insertar tallas
   const tallasData = tallas.map(t => ({
     producto_id: productoId,
     talla: t.talla,
