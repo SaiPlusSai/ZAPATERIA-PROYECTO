@@ -1,12 +1,9 @@
 import { Router } from 'express';
-import { crearColor, listarColores } from '../controllers/coloresController.js';
+import { crearColor, listarColores, editarColor } from '../controllers/coloresController.js';
 
 const router = Router();
-
-// POST: crear color
 router.post('/', crearColor);
-
-// GET: listar colores
 router.get('/', listarColores);
+router.put('/:id', editarColor); // 👈 ruta para editar
 
 export default router;

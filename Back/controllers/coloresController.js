@@ -13,3 +13,14 @@ export async function listarColores(req, res) {
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 }
+export async function editarColor(req, res) {
+  const { id } = req.params; // id del color a editar
+  const { nombre } = req.body;
+  const { data, error } = await supabase
+    .from('colores')
+    .update({ nombre })
+    .eq('id', id);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+}

@@ -12,3 +12,14 @@ export async function listarMateriales(req, res) {
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 }
+export async function editarMaterial(req, res) {
+  const { id } = req.params; // id del material a editar
+  const { nombre } = req.body;
+  const { data, error } = await supabase
+    .from('materiales')
+    .update({ nombre })
+    .eq('id', id);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+}
