@@ -4,21 +4,32 @@ import {
   getTallasDeProducto,
   editarTalla,
 } from "../services/tallasService";
+import { getProductos } from "../services/productosService"; // 👈 nuevo import
 
 const TallasPage = () => {
+  const [productos, setProductos] = useState([]); // 👈 nuevo estado
   const [productoId, setProductoId] = useState("");
   const [tallas, setTallas] = useState([]);
   const [nuevasTallas, setNuevasTallas] = useState([{ talla: "", stock: "" }]);
 
-  const fetchTallas = async () => {
-    if (!productoId) return;
-    const data = await getTallasDeProducto(productoId);
-    setTallas(data);
-  };
+  // Obtener productos
+  useEffect(() => {
+    const fetchProductos = async () => {
+      const data = await getProductos();
+      setProductos(data);
+    };
+    fetchProductos();
+  }, []);
 
+  // Obtener tallas cuando se seleccione producto
   useEffect(() => {
     if (productoId) fetchTallas();
   }, [productoId]);
+
+  const fetchTallas = async () => {
+    const data = await getTallasDeProducto(productoId);
+    setTallas(data);
+  };
 
   const handleAddInput = () => {
     setNuevasTallas([...nuevasTallas, { talla: "", stock: "" }]);
@@ -47,13 +58,20 @@ const TallasPage = () => {
       <h2>Tallas por Producto</h2>
 
       <div style={{ marginBottom: "1rem" }}>
-        <input
-          type="text"
-          placeholder="ID del producto"
+        <select
           value={productoId}
           onChange={(e) => setProductoId(e.target.value)}
-        />
-        <button onClick={fetchTallas}>Buscar tallas</button>
+        >
+          <option value="">Seleccione un producto</option>
+          {productos.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.modelo} (código: {p.codigo})
+            </option>
+          ))}
+        </select>
+        <button onClick={fetchTallas} disabled={!productoId}>
+          Buscar tallas
+        </button>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -82,12 +100,13 @@ const TallasPage = () => {
         <button type="button" onClick={handleAddInput}>
           + Añadir otra talla
         </button>
-        <button type="submit" style={{ marginLeft: "1rem" }}>
+        <button type="submit" style={{ marginLeft: "1rem" }} disabled={!productoId}>
           Guardar tallas
         </button>
       </form>
 
       <h3 style={{ marginTop: "2rem" }}>Tallas registradas</h3>
+      {tallas.length === 0 && productoId && <p>No hay tallas registradas aún.</p>}
       <ul>
         {tallas.map((t) => (
           <li key={t.id}>
