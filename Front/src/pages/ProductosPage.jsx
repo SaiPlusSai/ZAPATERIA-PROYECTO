@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   getProductos,
-  createProducto,
   deleteProducto,
 } from "../services/productosService";
 import { getMarcas } from "../services/marcasService";
@@ -13,9 +12,6 @@ const ProductosPage = () => {
   const [marcas, setMarcas] = useState([]);
   const [colores, setColores] = useState([]);
   const [materiales, setMateriales] = useState([]);
-
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [mostrarLista, setMostrarLista] = useState(true);
 
   const [productoEditando, setProductoEditando] = useState(null);
   const [nuevoProducto, setNuevoProducto] = useState({
@@ -56,31 +52,19 @@ const ProductosPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (productoEditando) {
-        alert("🚧 Edición aún no implementada en backend (PUT)");
-        // Acá deberías usar un `updateProducto(id, nuevoProducto)`
-      } else {
-        await createProducto(nuevoProducto);
-        alert("Producto creado con éxito");
-      }
-
-      setNuevoProducto({
-        codigo: "",
-        marca_id: "",
-        modelo: "",
-        color_id: "",
-        material_id: "",
-        imagen_url: "",
-        precio_compra: "",
-        precio_venta: ""
-      });
-      setProductoEditando(null);
-      fetchProductos();
-    } catch (error) {
-      console.error("Error al crear/editar producto:", error.response?.data || error.message);
-      alert("Error: " + (error.response?.data?.error || error.message));
-    }
+    alert("🚧 Edición aún no implementada en backend (PUT)");
+    setProductoEditando(null);
+    setNuevoProducto({
+      codigo: "",
+      marca_id: "",
+      modelo: "",
+      color_id: "",
+      material_id: "",
+      imagen_url: "",
+      precio_compra: "",
+      precio_venta: ""
+    });
+    fetchProductos();
   };
 
   const handleDelete = async (id) => {
@@ -91,8 +75,6 @@ const ProductosPage = () => {
   const iniciarEdicion = (producto) => {
     setProductoEditando(producto);
     setNuevoProducto({ ...producto });
-    setMostrarFormulario(true);
-    setMostrarLista(false);
   };
 
   const cancelarEdicion = () => {
@@ -107,39 +89,34 @@ const ProductosPage = () => {
       precio_compra: "",
       precio_venta: ""
     });
-    setMostrarFormulario(false);
-    setMostrarLista(true);
   };
 
   return (
     <div style={{ padding: "1rem" }}>
-      <h1>Productos</h1>
+      <h1>Productos registrados</h1>
+      <ul>
+        {productos.map((prod) => (
+          <li key={prod.id}>
+            {prod.modelo} (código: {prod.codigo}) - Bs. {prod.precio_venta}
+            <button onClick={() => handleDelete(prod.id)} style={{ marginLeft: "1rem" }}>
+              ❌ Eliminar
+            </button>
+            <button onClick={() => iniciarEdicion(prod)} style={{ marginLeft: "0.5rem" }}>
+              ✏️ Editar
+            </button>
+          </li>
+        ))}
+      </ul>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <button onClick={() => {
-          setMostrarFormulario(true);
-          setMostrarLista(false);
-          setProductoEditando(null);
-        }}>
-          ➕ Agregar nuevo producto
-        </button>
-
-        <button onClick={() => {
-          setMostrarLista(true);
-          setMostrarFormulario(false);
-        }} style={{ marginLeft: "1rem" }}>
-          📄 Ver productos
-        </button>
-      </div>
-
-      {mostrarFormulario && (
+      {productoEditando && (
         <form onSubmit={handleSubmit} style={{
-          marginBottom: "1rem",
+          marginTop: "2rem",
           display: "flex",
           flexDirection: "column",
           gap: "0.5rem",
           maxWidth: "400px"
         }}>
+          <h3>Editar Producto</h3>
           <input type="text" name="codigo" placeholder="Código" value={nuevoProducto.codigo} onChange={handleChange} />
           <select name="marca_id" value={nuevoProducto.marca_id} onChange={handleChange}>
             <option value="">Seleccione una marca</option>
@@ -164,25 +141,9 @@ const ProductosPage = () => {
           <input type="number" name="precio_compra" placeholder="Precio de Compra" value={nuevoProducto.precio_compra} onChange={handleChange} />
           <input type="number" name="precio_venta" placeholder="Precio de Venta" value={nuevoProducto.precio_venta} onChange={handleChange} />
 
-          <button type="submit">{productoEditando ? "Actualizar" : "Agregar Producto"}</button>
-          {productoEditando && <button onClick={cancelarEdicion} type="button">Cancelar edición</button>}
+          <button type="submit">Actualizar Producto</button>
+          <button onClick={cancelarEdicion} type="button">Cancelar edición</button>
         </form>
-      )}
-
-      {mostrarLista && (
-        <ul>
-          {productos.map((prod) => (
-            <li key={prod.id}>
-              {prod.modelo} (código: {prod.codigo}) - Bs. {prod.precio_venta}
-              <button onClick={() => handleDelete(prod.id)} style={{ marginLeft: "1rem" }}>
-                ❌ Eliminar
-              </button>
-              <button onClick={() => iniciarEdicion(prod)} style={{ marginLeft: "0.5rem" }}>
-                ✏️ Editar
-              </button>
-            </li>
-          ))}
-        </ul>
       )}
     </div>
   );
