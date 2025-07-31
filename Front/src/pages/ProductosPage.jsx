@@ -68,6 +68,9 @@ const ProductosPage = () => {
   };
 
   const handleDelete = async (id) => {
+    const confirmar = confirm("¿Estás seguro de eliminar este producto?");
+    if (!confirmar) return;
+
     await deleteProducto(id);
     fetchProductos();
   };
@@ -91,22 +94,71 @@ const ProductosPage = () => {
     });
   };
 
+  const getNombre = (id, lista) => {
+    const item = lista.find((el) => el.id === id);
+    return item?.nombre || "N/A";
+  };
+
   return (
-    <div style={{ padding: "1rem" }}>
-      <h1>Productos registrados</h1>
-      <ul>
+    <div style={{ padding: "2rem", backgroundColor: "#f8fafc", minHeight: "100vh", fontFamily: "Segoe UI, sans-serif" }}>
+      <h1 style={{ textAlign: "center", marginBottom: "2rem", color: "#1f2937" }}>Productos registrados</h1>
+
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+        gap: "1.5rem"
+      }}>
         {productos.map((prod) => (
-          <li key={prod.id}>
-            {prod.modelo} (código: {prod.codigo}) - Bs. {prod.precio_venta}
-            <button onClick={() => handleDelete(prod.id)} style={{ marginLeft: "1rem" }}>
-              ❌ Eliminar
-            </button>
-            <button onClick={() => iniciarEdicion(prod)} style={{ marginLeft: "0.5rem" }}>
-              ✏️ Editar
-            </button>
-          </li>
+          <div key={prod.id} style={{
+            border: "1px solid #ddd",
+            borderRadius: "10px",
+            padding: "1rem",
+            backgroundColor: "#fff",
+            display: "flex",
+            flexDirection: "column",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+          }}>
+            <img
+              src={prod.imagen_url || "https://via.placeholder.com/250"}
+              alt={prod.modelo}
+              style={{
+                width: "100%",
+                height: "180px",
+                objectFit: "cover",
+                borderRadius: "6px"
+              }}
+            />
+            <h3 style={{ margin: "0.5rem 0", color: "#111827" }}>{prod.modelo}</h3>
+            <p style={{ fontSize: "0.9rem", margin: "0.2rem 0" }}>Código: {prod.codigo}</p>
+            <p style={{ fontSize: "0.9rem", margin: "0.2rem 0" }}>Marca: {getNombre(prod.marca_id, marcas)}</p>
+            <p style={{ fontSize: "0.9rem", margin: "0.2rem 0" }}>Color: {getNombre(prod.color_id, colores)}</p>
+            <p style={{ fontSize: "0.9rem", margin: "0.2rem 0" }}>Material: {getNombre(prod.material_id, materiales)}</p>
+            <p style={{ fontWeight: "bold", marginTop: "0.3rem", color: "#16a34a" }}>Precio Bs: {prod.precio_venta}</p>
+            <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.7rem", justifyContent: "center" }}>
+              <button
+                onClick={() => handleDelete(prod.id)}
+                style={{
+                  backgroundColor: "#dc2626",
+                  color: "white",
+                  border: "none",
+                  padding: "0.3rem 0.8rem",
+                  borderRadius: "5px"
+                }}
+              >❌</button>
+              <button
+                onClick={() => iniciarEdicion(prod)}
+                style={{
+                  backgroundColor: "#2563eb",
+                  color: "white",
+                  border: "none",
+                  padding: "0.3rem 0.8rem",
+                  borderRadius: "5px"
+                }}
+              >✏️</button>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
 
       {productoEditando && (
         <form onSubmit={handleSubmit} style={{
@@ -114,9 +166,16 @@ const ProductosPage = () => {
           display: "flex",
           flexDirection: "column",
           gap: "0.5rem",
-          maxWidth: "400px"
+          maxWidth: "400px",
+          marginLeft: "auto",
+          marginRight: "auto",
+          backgroundColor: "white",
+          padding: "1rem",
+          border: "1px solid #ccc",
+          borderRadius: "10px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
         }}>
-          <h3>Editar Producto</h3>
+          <h3 style={{ textAlign: "center", marginBottom: "0.5rem" }}>Editar Producto</h3>
           <input type="text" name="codigo" placeholder="Código" value={nuevoProducto.codigo} onChange={handleChange} />
           <select name="marca_id" value={nuevoProducto.marca_id} onChange={handleChange}>
             <option value="">Seleccione una marca</option>

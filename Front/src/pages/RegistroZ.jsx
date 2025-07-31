@@ -62,41 +62,128 @@ const RegistroZ = () => {
     }
   };
 
+  const inputStyle = {
+    padding: "0.5rem",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    backgroundColor: "#fdfdfd"
+  };
+
   return (
-    <div style={{ padding: "1rem" }}>
-      <h1>Registrar Producto</h1>
-      <form onSubmit={handleSubmit} style={{
+    <div style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: "100vh",
+      backgroundColor: "#f9f9f9"
+    }}>
+      <div style={{
+        border: "1px solid #ccc",
+        padding: "2rem 3rem",
+        backgroundColor: "white",
         display: "flex",
         flexDirection: "column",
-        gap: "0.5rem",
-        maxWidth: "400px"
+        gap: "2rem",
+        maxWidth: "800px",
+        width: "100%"
       }}>
-        <input type="text" name="codigo" placeholder="Código" value={nuevoProducto.codigo} onChange={handleChange} />
-        <select name="marca_id" value={nuevoProducto.marca_id} onChange={handleChange}>
-          <option value="">Seleccione una marca</option>
-          {marcas.map((m) => (
-            <option key={m.id} value={m.id}>{m.nombre}</option>
-          ))}
-        </select>
-        <input type="text" name="modelo" placeholder="Modelo" value={nuevoProducto.modelo} onChange={handleChange} />
-        <select name="color_id" value={nuevoProducto.color_id} onChange={handleChange}>
-          <option value="">Seleccione un color</option>
-          {colores.map((c) => (
-            <option key={c.id} value={c.id}>{c.nombre}</option>
-          ))}
-        </select>
-        <select name="material_id" value={nuevoProducto.material_id} onChange={handleChange}>
-          <option value="">Seleccione un material</option>
-          {materiales.map((m) => (
-            <option key={m.id} value={m.id}>{m.nombre}</option>
-          ))}
-        </select>
-        <input type="text" name="imagen_url" placeholder="Imagen URL" value={nuevoProducto.imagen_url} onChange={handleChange} />
-        <input type="number" name="precio_compra" placeholder="Precio de Compra" value={nuevoProducto.precio_compra} onChange={handleChange} />
-        <input type="number" name="precio_venta" placeholder="Precio de Venta" value={nuevoProducto.precio_venta} onChange={handleChange} />
+        <h2 style={{ textAlign: "center", fontSize: "1.5rem", fontWeight: "bold" }}>
+          Registrar nuevo producto
+        </h2>
 
-        <button type="submit">Agregar Producto</button>
-      </form>
+        <form onSubmit={handleSubmit} style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "1rem",
+          alignItems: "center"
+        }}>
+          <label>Código del producto:</label>
+          <input
+            name="codigo"
+            value={nuevoProducto.codigo}
+            onChange={handleChange}
+            placeholder="Ej: ZAP123"
+            style={inputStyle}
+          />
+
+          <label>Marca:</label>
+          <select
+            name="marca_id"
+            value={nuevoProducto.marca_id}
+            onChange={handleChange}
+            style={inputStyle}
+          >
+            <option value="">Seleccione una marca</option>
+            {marcas.map((m) => (
+              <option key={m.id} value={m.id}>{m.nombre}</option>
+            ))}
+          </select>
+
+          <label>Nombre del producto:</label>
+          <input
+            name="modelo"
+            value={nuevoProducto.modelo}
+            onChange={handleChange}
+            placeholder="Ej: Botín negro"
+            style={inputStyle}
+          />
+
+          <label>Color:</label>
+          <select name="color_id" value={nuevoProducto.color_id} onChange={handleChange} style={inputStyle}>
+            <option value="">Seleccionar Color</option>
+            {colores.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+          </select>
+
+          <label>Material:</label>
+          <select name="material_id" value={nuevoProducto.material_id} onChange={handleChange} style={inputStyle}>
+            <option value="">Seleccionar material</option>
+            {materiales.map(m => <option key={m.id} value={m.id}>{m.nombre}</option>)}
+          </select>
+
+          <label>Imagen del producto:</label>
+          <input
+            name="imagen_url"
+            value={nuevoProducto.imagen_url}
+            onChange={handleChange}
+            placeholder="https://..."
+            style={inputStyle}
+          />
+
+          <label>Precio de compra:</label>
+          <input
+            name="precio_compra"
+            value={nuevoProducto.precio_compra}
+            onChange={handleChange}
+            placeholder="Ingresar precio de compra"
+            type="number"
+            style={inputStyle}
+          />
+
+          <label>Precio de venta:</label>
+          <input
+            name="precio_venta"
+            value={nuevoProducto.precio_venta}
+            onChange={handleChange}
+            placeholder="Ingresar precio de venta"
+            type="number"
+            style={inputStyle}
+          />
+
+          {/* Botón en fila completa */}
+          <div style={{ gridColumn: "1 / span 2", textAlign: "center", marginTop: "1rem" }}>
+            <button type="submit" style={{
+              padding: "0.6rem 1.5rem",
+              backgroundColor: "#111827",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              fontWeight: "bold"
+            }}>
+              Agregar Producto
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
